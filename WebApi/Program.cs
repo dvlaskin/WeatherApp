@@ -1,76 +1,58 @@
-using OpenTelemetry;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
-using StackExchange.Redis;
+using WebApi.IoC;
+using WebApi.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var startupLogger = LoggerControl.CreateStartupLogger();
+startupLogger.LogInformation("Web API starting...");
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// add cache
-builder.AddRedisClient(connectionName: "cache");
-
-// add open telemetry 
-var useOtltExporter = !string.IsNullOrEmpty(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-if (useOtltExporter)
+try
 {
-    builder.Services.AddOpenTelemetry()
-        .WithMetrics(metrics =>
-        {
-            metrics.AddRuntimeInstrumentation()
-                .AddMeter(
-                    "Microsoft.AspNetCore.Hosting",
-                    "Microsoft.AspNetCore.Server.Kestrel",
-                    "System.Net.Http"
-                );
-        })
-        .WithTracing(tracing =>
-        {
-            tracing
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation();
-        }).UseOtlpExporter();
-}
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    // setup logger
+    builder.Logging.AddLogger();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    // Add services to the container.
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-app.UseHttpsRedirection();
+    // add cache
+    builder.AddRedisClient(connectionName: "cache");
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    // add services
+    builder.Services.AddTransient<WeatherForecastService>();
 
-app.MapGet("/weatherforecast", (IConnectionMultiplexer cache) =>
+    // add open telemetry 
+    builder.Services.AddOpenTelemetry(builder.Configuration);
+
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
-        Console.WriteLine("Is Redis connected: " + cache.IsConnected);
-        
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-app.Run();
+    app.UseHttpsRedirection();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+    app.MapGet("/weatherforecast", async (WeatherForecastService weatherForecastService) =>
+        {
+            var forecast = await weatherForecastService.GetForecastAsync("New York");
+            return forecast;
+        })
+        .WithName("GetWeatherForecast")
+        .WithOpenApi();
+    
+    app.Run();
 }
+catch (Exception ex)
+{
+    startupLogger.LogCritical(ex, "Web API starting failed: {ErrorMessage}", ex.Message);
+}
+finally
+{
+    startupLogger.LogInformation("Web API stopped.");
+}
+
