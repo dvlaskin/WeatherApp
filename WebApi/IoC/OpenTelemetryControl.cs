@@ -12,15 +12,15 @@ public static class OpenTelemetryControl
         if (useOtltExporter)
         {
             services.AddOpenTelemetry()
-                .WithMetrics(metrics =>
-                {
-                    metrics.AddRuntimeInstrumentation()
-                        .AddMeter(
-                            "Microsoft.AspNetCore.Hosting",
-                            "Microsoft.AspNetCore.Server.Kestrel",
-                            "System.Net.Http"
-                        );
-                })
+                // .WithMetrics(metrics =>
+                // {
+                //     metrics.AddRuntimeInstrumentation()
+                //         .AddMeter(
+                //             "Microsoft.AspNetCore.Hosting",
+                //             "Microsoft.AspNetCore.Server.Kestrel",
+                //             "System.Net.Http"
+                //         );
+                // })
                 .WithTracing(tracing =>
                 {
                     tracing
