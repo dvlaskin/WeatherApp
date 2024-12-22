@@ -21,10 +21,10 @@ try
     builder.AddRedisClient(connectionName: "cache");
 
     // add services
-    builder.Services.AddScoped<ICacheService, RedisService>();
-    builder.Services.AddTransient<IForecastService, OpenMeteoForecastService>();
-    builder.Services.AddTransient<IForecastCollector, ForecastCollector>();
-    builder.Services.AddTransient<WeatherForecastService>();
+    builder.Services.AddSingleton<ICacheService, RedisService>();
+    builder.Services.AddScoped<IForecastService, OpenMeteoForecastService>();
+    builder.Services.AddScoped<IForecastCollector, ForecastCollector>();
+    builder.Services.AddScoped<WeatherForecastService>();
 
     // add open telemetry 
     builder.Services.AddOpenTelemetry(builder.Configuration);
