@@ -1,20 +1,18 @@
 using StackExchange.Redis;
 using WebApi.Models;
+using WebApi.Services.Forecast;
 
 namespace WebApi.Services;
 
 public class WeatherForecastService
 {
     private readonly ILogger<WeatherForecastService> logger;
-    private readonly IConnectionMultiplexer cache;
-    private readonly string[] summaries = 
-        ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
+    private readonly IForecastCollector forecastCollector;
 
-    
-    public WeatherForecastService(ILogger<WeatherForecastService> logger, IConnectionMultiplexer cache)
+    public WeatherForecastService(ILogger<WeatherForecastService> logger, IForecastCollector forecastCollector)
     {
         this.logger = logger;
-        this.cache = cache;
+        this.forecastCollector = forecastCollector;
     }
     
     
@@ -22,15 +20,8 @@ public class WeatherForecastService
     {
         logger.LogInformation($"Getting weather forecast for city {city}");
         
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
+        var forecasts = await forecastCollector.CollectForecastAsync(city);
         
-        return await Task.FromResult(forecast);
+        return forecasts.Values.SelectMany(s => s).ToArray();
     }
 }

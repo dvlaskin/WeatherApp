@@ -1,5 +1,6 @@
 using WebApi.IoC;
 using WebApi.Services;
+using WebApi.Services.Forecast;
 
 var startupLogger = LoggerControl.CreateStartupLogger();
 startupLogger.LogInformation("Web API starting...");
@@ -20,6 +21,9 @@ try
     builder.AddRedisClient(connectionName: "cache");
 
     // add services
+    builder.Services.AddScoped<ICacheService, RedisService>();
+    builder.Services.AddTransient<IForecastService, OpenMeteoForecastService>();
+    builder.Services.AddTransient<IForecastCollector, ForecastCollector>();
     builder.Services.AddTransient<WeatherForecastService>();
 
     // add open telemetry 
