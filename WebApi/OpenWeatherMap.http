@@ -1,5 +1,5 @@
 @HostAddress = https://api.openweathermap.org
-@apiKey = 79823a906e0616946eebddbd51253976
+@apiKey = xxx
 
 GET {{HostAddress}}/geo/1.0/direct?q=London&limit=1&appid={{apiKey}}
 Accept: application/json
