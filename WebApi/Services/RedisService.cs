@@ -23,7 +23,7 @@ public class RedisService : ICacheService
     
     public async Task<T?> GetAsync<T>(string key)
     {
-        var cachedValue = await db.StringGetAsync(key);
+        var cachedValue = await db.StringGetAsync(key.Replace(" ","_"));
         if (!cachedValue.HasValue || cachedValue.IsNullOrEmpty)
             return default;
         
@@ -33,6 +33,6 @@ public class RedisService : ICacheService
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null)
     {
-        await db.StringSetAsync(key, JsonSerializer.Serialize(value), expiry);
+        await db.StringSetAsync(key.Replace(" ","_"), JsonSerializer.Serialize(value), expiry);
     }
 }

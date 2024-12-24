@@ -12,7 +12,7 @@ public abstract class BaseForecastService : IForecastService
     private readonly string cacheKey = "{0}-forecast";
     private readonly ILogger<BaseForecastService> logger;
     private readonly ICacheService cacheService;
-    private readonly int expiredTimeout = 300;
+    private readonly int expiredTimeout = 60;
 
     
     protected BaseForecastService(ILogger<BaseForecastService> logger, ICacheService cacheService)
@@ -36,7 +36,7 @@ public abstract class BaseForecastService : IForecastService
         cachedForecast = await RequestDataAsync(city);
         
         logger.LogInformation("Requested forecasts for {City}", city);
-        await cacheService.SetAsync(cityCacheKey, cachedForecast, TimeSpan.FromSeconds(expiredTimeout));
+        await cacheService.SetAsync(cityCacheKey, cachedForecast, TimeSpan.FromMinutes(expiredTimeout));
         
         return cachedForecast;
     }

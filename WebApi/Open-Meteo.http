@@ -1,0 +1,12 @@
+@HostAddress = https://api.open-meteo.com/v1
+
+GET {{HostAddress}}/forecast/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "forecast_days": 3,
+  "city": "New-York"
+}
+
+###
