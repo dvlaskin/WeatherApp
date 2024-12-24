@@ -16,6 +16,7 @@ try
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddCors();
 
     // add cache
     builder.AddRedisClient(connectionName: "cache");
@@ -39,6 +40,8 @@ try
     }
 
     app.UseHttpsRedirection();
+    
+    app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
     app.MapGet("/weatherforecast", async (WeatherForecastService weatherForecastService) =>
