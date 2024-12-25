@@ -221,3 +221,4 @@ machine-learning/tutorials/**/MovieRecommenderModel.zip
 
 # env variables
 .env
+.env.json

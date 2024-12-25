@@ -8,6 +8,14 @@ startupLogger.LogInformation("Web API starting...");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    
+    // load config values from env file
+    DotNetEnv.Env.Load("../.env");
+    
+    // setup config
+    builder.Configuration
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables();
 
     // setup logger
     builder.Logging.AddLogger();
