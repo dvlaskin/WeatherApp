@@ -9,4 +9,13 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'WeatherFrontend';
+  counter: number = 0;
+
+  onIncrement() {
+    this.counter++;
+  }
+
+  onDecrement() {
+    this.counter--;
+  }
 }
