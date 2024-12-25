@@ -1,13 +1,25 @@
 @HostAddress = https://api.openweathermap.org
 @apiKey = {{OpenWeatherMapApiKey}}
 
-GET {{HostAddress}}/geo/1.0/direct?q=London&limit=1&appid={{apiKey}}
-Accept: application/json
-
-###
-
+# city location
 @lat=51.5073219
 @lon=-0.1276474
 
-GET {{HostAddress}}/data/2.5/weather?lat={{lat}}&lon={{lon}}&exclude=minutely,hourly&appid={{apiKey}}
+### location of a city
+
+GET {{HostAddress}}/geo/1.0/direct?q=London&limit=1&appid={{apiKey}}
+Accept: application/json
+
+
+### current weather data
+
+
+GET {{HostAddress}}/data/2.5/weather?lat={{lat}}&lon={{lon}}&exclude=minutely,hourly&units=metric&appid={{apiKey}}
+Accept: application/json
+
+
+### 5 days weather forecast
+
+
+GET {{HostAddress}}/data/2.5/forecast?lat={{lat}}&lon={{lon}}&units=metric&appid={{apiKey}}
 Accept: application/json

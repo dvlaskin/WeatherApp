@@ -4,7 +4,7 @@ namespace WebApi.Services.Forecast;
 
 public interface IForecastService
 {
-    Task<IEnumerable<WeatherForecast>> FetchDataAsync(string city);
+    Task<IEnumerable<WeatherForecastData>> FetchDataAsync(string city);
 }
 
 public abstract class BaseForecastService : IForecastService
@@ -22,10 +22,10 @@ public abstract class BaseForecastService : IForecastService
     }
     
     
-    public async Task<IEnumerable<WeatherForecast>> FetchDataAsync(string city)
+    public async Task<IEnumerable<WeatherForecastData>> FetchDataAsync(string city)
     {
         var cityCacheKey = string.Format(cacheKey, city);
-        var cachedForecast = await cacheService.GetAsync<List<WeatherForecast>>(cityCacheKey);
+        var cachedForecast = await cacheService.GetAsync<List<WeatherForecastData>>(cityCacheKey);
 
         if (cachedForecast is not null)
         {
@@ -41,5 +41,5 @@ public abstract class BaseForecastService : IForecastService
         return cachedForecast;
     }
     
-    protected abstract Task<List<WeatherForecast>> RequestDataAsync(string city);
+    protected abstract Task<List<WeatherForecastData>> RequestDataAsync(string city);
 }

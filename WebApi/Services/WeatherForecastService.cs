@@ -16,7 +16,7 @@ public class WeatherForecastService
     }
     
     
-    public async Task<IEnumerable<WeatherForecast>> GetForecastAsync(string city)
+    public async Task<IEnumerable<WeatherForecastData>> GetForecastAsync(string city)
     {
         logger.LogInformation("Getting weather forecast for city {City}", city);
         

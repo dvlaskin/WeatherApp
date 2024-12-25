@@ -9,9 +9,9 @@ public class OpenMeteoForecastService : BaseForecastService
     {
     }
 
-    protected override async Task<List<WeatherForecast>> RequestDataAsync(string city)
+    protected override async Task<List<WeatherForecastData>> RequestDataAsync(string city)
     {
-        var forecasts = new List<WeatherForecast>
+        var forecasts = new List<WeatherForecastData>
         {
             new()
             {
