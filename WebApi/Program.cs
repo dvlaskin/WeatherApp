@@ -1,3 +1,4 @@
+using WebApi;
 using WebApi.IoC;
 using WebApi.Services;
 using WebApi.Services.Forecast;
@@ -33,8 +34,23 @@ try
     builder.Services.AddSingleton<ICacheService, RedisService>();
     builder.Services.AddScoped<IForecastService, OpenMeteoForecastService>();
     builder.Services.AddScoped<IForecastCollector, ForecastCollector>();
+    builder.Services.AddScoped<IGeoDataService, GeoDataService>();
     builder.Services.AddScoped<WeatherForecastService>();
-
+    
+    
+    // add http factories
+    builder.Services.AddHttpClient(
+        AppConstants.OpenWeatherMapHttpClient,
+        client =>
+        {
+            client.BaseAddress = new Uri(
+                builder.Configuration.GetSection("OpenWeatherMap:BaseUrl").Value ?? string.Empty
+            );
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        }
+    );
+    
+    
     // add open telemetry 
     builder.Services.AddOpenTelemetry(builder.Configuration);
 
@@ -58,6 +74,14 @@ try
             return forecast;
         })
         .WithName("GetWeatherForecast")
+        .WithOpenApi();
+
+    app.MapGet("/city/@name", async (string name, WeatherForecastService weatherForecastService) =>
+        {
+            var cityData = await weatherForecastService.GetForecastAsync(name);
+            return await weatherForecastService.GetCoordinatesAsync(name);
+        })
+        .WithName("GetCity")
         .WithOpenApi();
     
     app.Run();
