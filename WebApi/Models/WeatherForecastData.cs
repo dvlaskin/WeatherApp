@@ -3,9 +3,9 @@ namespace WebApi.Models;
 public class WeatherForecastData()
 {
     public DateOnly Date { get; set; }
-    public int TemperatureC { get; set; }
+    public double TemperatureC { get; set; }
     public string? Summary { get; set; }
     public DateTime ForecastDate { get; set; } = DateTime.UtcNow;
 
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public double TemperatureF => 32 + (TemperatureC / 0.5556);
 }

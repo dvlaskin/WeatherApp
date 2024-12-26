@@ -7,7 +7,7 @@
 
 ### location of a city
 
-GET {{HostAddress}}/geo/1.0/direct?q=London&limit=1&appid={{apiKey}}
+GET {{HostAddress}}/geo/1.0/direct?q=London&limit=10&appid={{apiKey}}
 Accept: application/json
 
 

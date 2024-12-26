@@ -13,6 +13,7 @@ public interface IGeoDataService
 
 public class GeoDataService : IGeoDataService
 {
+    private readonly string cacheKey = "geodata:{0}";
     private readonly ILogger<GeoDataService> logger;
     private readonly ICacheService cacheService;
     private readonly IHttpClientFactory httpClientFactory;
@@ -35,16 +36,36 @@ public class GeoDataService : IGeoDataService
 
     public async Task<IEnumerable<CityCoordinate>> GetCitiesCoordinateAsync(string cityName, CancellationToken cancellationToken = default)
     {
+        var cityCacheKey = string.Format(cacheKey, cityName);
+        var cachedGeoData = await cacheService.GetAsync<List<CityCoordinate>>(cityCacheKey);
+
+        if (cachedGeoData is not null)
+        {
+            logger.LogInformation("Found cache geo data for {City}", cityName);
+            return cachedGeoData;
+        }
+        
         var httpClient = httpClientFactory.CreateClient(AppConstants.OpenWeatherMapHttpClient);
-        var urlString = $"/geo/1.0/direct?q={cityName}&limit=1&appid={apiKey}";
+        var urlString = $"/geo/1.0/direct?q={cityName}&limit=10&appid={apiKey}";
         var response = await httpClient.GetAsync(urlString, cancellationToken);
 
         response.EnsureSuccessStatusCode();
         
         var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
         
-        return string.IsNullOrEmpty(responseString) 
+        var result = string.IsNullOrEmpty(responseString) 
             ? new List<CityCoordinate>() 
-            : JsonSerializer.Deserialize<IEnumerable<CityCoordinate>>(responseString)!;
+            : JsonSerializer.Deserialize<IEnumerable<CityCoordinate>>(responseString)!.ToList();
+        
+        // group by country and state
+        result = result.GroupBy(x => new { x.State, x.Country })
+            .Select(x => x.First())
+            .ToList();
+        
+        logger.LogInformation("Requested geo data for {City}", cityName);
+
+        await cacheService.SetAsync(cityCacheKey, result);
+        
+        return result;
     }
 }

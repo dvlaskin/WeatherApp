@@ -70,16 +70,17 @@ try
 
     app.MapGet("/weatherforecast", async (WeatherForecastService weatherForecastService) =>
         {
-            var forecast = await weatherForecastService.GetForecastAsync("New York");
+            var forecast = await weatherForecastService
+                .GetForecastAsync("London", 51.5073219, -0.1276474);
             return forecast;
         })
         .WithName("GetWeatherForecast")
         .WithOpenApi();
 
-    app.MapGet("/city/@name", async (string name, WeatherForecastService weatherForecastService) =>
+    app.MapGet("/city/{cityName}", async (string cityName, WeatherForecastService weatherForecastService) =>
         {
-            var cityData = await weatherForecastService.GetForecastAsync(name);
-            return await weatherForecastService.GetCoordinatesAsync(name);
+            var result = await weatherForecastService.GetCoordinatesAsync(cityName);
+            return result;
         })
         .WithName("GetCity")
         .WithOpenApi();

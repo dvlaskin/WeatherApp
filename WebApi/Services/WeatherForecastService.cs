@@ -23,18 +23,18 @@ public class WeatherForecastService
     }
     
     
-    public async Task<IEnumerable<WeatherForecastData>> GetForecastAsync(string city)
+    public async Task<IEnumerable<WeatherForecastData>> GetForecastAsync(string city, double latitude, double longitude)
     {
         logger.LogInformation("Getting weather forecast for city {City}", city);
         
-        var forecasts = await forecastCollector.CollectForecastAsync(city);
+        var forecasts = await forecastCollector.CollectForecastAsync(city, latitude, longitude);
         
         return forecasts.Values.SelectMany(s => s).ToArray();
     }
 
     public async Task<IEnumerable<CityCoordinate>> GetCoordinatesAsync(string city)
     {
-        logger.LogInformation("Getting weather forecast for city {City}", city);
+        logger.LogInformation("Getting coordinates for {City} city", city);
         
         return await geoDataService.GetCitiesCoordinateAsync(city);
     }

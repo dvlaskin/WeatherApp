@@ -5,7 +5,7 @@ namespace WebApi.Services.Forecast;
 
 public interface IForecastCollector
 {
-    Task<Dictionary<string, IEnumerable<WeatherForecastData>>> CollectForecastAsync(string city);
+    Task<Dictionary<string, IEnumerable<WeatherForecastData>>> CollectForecastAsync(string cityName, double latitude, double longitude);
 }
 
 
@@ -22,13 +22,13 @@ public class ForecastCollector : IForecastCollector
     }
 
 
-    public async Task<Dictionary<string, IEnumerable<WeatherForecastData>>> CollectForecastAsync(string city)
+    public async Task<Dictionary<string, IEnumerable<WeatherForecastData>>> CollectForecastAsync(string cityName, double latitude, double longitude)
     {
         var result = new Dictionary<string, IEnumerable<WeatherForecastData>>();
         var forecastTasks = new Dictionary<string, Task<IEnumerable<WeatherForecastData>>>();
         foreach (var forecast in forecastServices)
         {
-            var taskItem = forecast.FetchDataAsync(city);
+            var taskItem = forecast.FetchDataAsync(cityName, latitude, longitude);
             forecastTasks.Add(forecast.GetType().Name, taskItem);
         }
         
