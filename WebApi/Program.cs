@@ -1,6 +1,7 @@
 using WebApi;
 using WebApi.IoC;
 using WebApi.Services;
+using WebApi.Services.CurrentWeather;
 using WebApi.Services.Forecast;
 
 var startupLogger = LoggerControl.CreateStartupLogger();
@@ -32,10 +33,12 @@ try
 
     // add services
     builder.Services.AddSingleton<ICacheService, RedisService>();
+    builder.Services.AddScoped<ICurrentWeatherService, OpenMeteoCurrentWeather>();
+    builder.Services.AddScoped<ICurrentWeatherCollector, CurrentWeatherCollector>();
     builder.Services.AddScoped<IForecastService, OpenMeteoForecastService>();
     builder.Services.AddScoped<IForecastCollector, ForecastCollector>();
     builder.Services.AddScoped<IGeoDataService, GeoDataService>();
-    builder.Services.AddScoped<WeatherForecastService>();
+    builder.Services.AddScoped<WeatherService>();
     
     
     // add http factories
@@ -66,24 +69,36 @@ try
     app.UseHttpsRedirection();
     
     app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-
-    app.MapGet("/weatherforecast", async (WeatherForecastService weatherForecastService) =>
+    
+    app.MapGet("/city/{cityName}", async (string cityName, IGeoDataService geoDataService) =>
         {
-            var forecast = await weatherForecastService
-                .GetForecastAsync("London", 51.5073219, -0.1276474);
-            return forecast;
-        })
-        .WithName("GetWeatherForecast")
-        .WithOpenApi();
-
-    app.MapGet("/city/{cityName}", async (string cityName, WeatherForecastService weatherForecastService) =>
-        {
-            var result = await weatherForecastService.GetCoordinatesAsync(cityName);
+            var result = await geoDataService.GetCitiesCoordinateAsync(cityName);
+            
             return result;
         })
         .WithName("GetCity")
         .WithOpenApi();
+    
+    app.MapGet("/currentweather", async (WeatherService weatherForecastService) =>
+        {
+            var forecast = await weatherForecastService
+                .GetCurrentWeatherAsync("London", 51.5073219, -0.1276474);
+            
+            return forecast;
+        })
+        .WithName("GetCurrentWeather")
+        .WithOpenApi();
+    
+    app.MapGet("/weatherforecast", async (WeatherService weatherForecastService) =>
+        {
+            var forecast = await weatherForecastService
+                .GetForecastAsync("London", 51.5073219, -0.1276474);
+            
+            return forecast;
+        })
+        .WithName("GetWeatherForecast")
+        .WithOpenApi();
+    
     
     app.Run();
 }

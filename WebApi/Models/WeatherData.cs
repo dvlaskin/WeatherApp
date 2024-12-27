@@ -1,6 +1,6 @@
 namespace WebApi.Models;
 
-public class WeatherForecastData()
+public class WeatherData()
 {
     public DateOnly Date { get; set; }
     public double TemperatureC { get; set; }

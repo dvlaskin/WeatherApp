@@ -14,7 +14,7 @@ public class ForecastWeatherData
     public int Cnt { get; set; }
 
     [JsonPropertyName("list")]
-    public List<ResultList> ResultLists { get; } = new List<ResultList>();
+    public List<ResultList> ResultsList { get; set; } = new List<ResultList>();
 
     [JsonPropertyName("city")]
     public City City { get; set; }
