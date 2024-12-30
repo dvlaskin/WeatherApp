@@ -79,20 +79,22 @@ try
         .WithName("GetCity")
         .WithOpenApi();
     
-    app.MapGet("/currentweather", async (WeatherService weatherForecastService) =>
+    app.MapGet("/currentweather/{cityName}/{latitude}/{longitude}", 
+        async (string cityName, double latitude, double longitude, WeatherService weatherForecastService) =>
         {
             var forecast = await weatherForecastService
-                .GetCurrentWeatherAsync("London", 51.5073219, -0.1276474);
+                .GetCurrentWeatherAsync(cityName, latitude, longitude);
             
             return forecast;
         })
         .WithName("GetCurrentWeather")
         .WithOpenApi();
     
-    app.MapGet("/weatherforecast", async (WeatherService weatherForecastService) =>
+    app.MapGet("/weatherforecast/{cityName}/{latitude}/{longitude}",
+        async (string cityName, double latitude, double longitude, WeatherService weatherForecastService) =>
         {
             var forecast = await weatherForecastService
-                .GetForecastAsync("London", 51.5073219, -0.1276474);
+                .GetForecastAsync(cityName, latitude, longitude);
             
             return forecast;
         })
