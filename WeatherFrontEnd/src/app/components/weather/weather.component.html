@@ -1,22 +1,50 @@
 <div class="weather-container">
-    <h1>Прогноз погоды: {{ cityName }}</h1>
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <h1>Weather Frontend</h1>
   
-    <div *ngIf="currentWeather" class="current-weather">
-      <h2>Сейчас</h2>
-      <p>Температура: {{ currentWeather.temp }}°C</p>
-      <p>Ощущается как: {{ currentWeather.feels_like }}°C</p>
-      <p>Погодные условия: {{ currentWeather.weather[0]?.description }}</p>
+    <!-- searchBar -->
+    <div class="search-container">
+      <input
+        type="text"
+        [(ngModel)]="cityName"
+        placeholder="input city name"
+      />
+      <button (click)="searchCity()">find</button>
     </div>
   
+    <!-- list of cities -->
+    <div *ngIf="cities.length > 0" class="city-list">
+      <h3>Choose city:</h3>
+      <ul>
+        <li *ngFor="let city of cities">
+          <button (click)="selectCity(city)">
+            {{ city.cityName }} ({{ city.country }} - {{ city.state }})
+          </button>
+        </li>
+      </ul>
+    </div>
+  
+    <!-- chosen city -->
+    <div *ngIf="selectedCity" class="selected-city">
+      <h3>Chosen city: {{ selectedCity.cityName }}</h3>
+      <button (click)="fetchWeather()">Get weather</button>
+    </div>
+  
+    <!-- current weather -->
+    <div *ngIf="currentWeather" class="current-weather">
+      <h2>Current weather</h2>
+      <p>Temperature: {{ currentWeather.temperatureC }}°C</p>
+    </div>
+  
+    <!-- weather forecast -->
     <div *ngIf="weatherForecast.length" class="forecast">
-      <h2>Прогноз на несколько дней</h2>
+      <h2>Weather forecast</h2>
       <div *ngFor="let day of weatherForecast" class="forecast-day">
-        <p>Дата: {{ day.dt | date: 'dd.MM.yyyy' }}</p>
-        <p>Температура днем: {{ day.temp.day }}°C</p>
-        <p>Температура ночью: {{ day.temp.night }}°C</p>
-        <p>Погодные условия: {{ day.weather[0]?.description }}</p>
+        <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
+        <p>Temerature: {{ day.temperatureC }}°C</p>
       </div>
     </div>
-</div>
+  
+    <!-- error message -->
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
   
