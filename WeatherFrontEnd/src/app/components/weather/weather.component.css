@@ -1,0 +1,32 @@
+.weather-container {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+    
+.current-weather, .forecast {
+    margin-top: 1.5rem;
+}
+
+.forecast-day {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+  
