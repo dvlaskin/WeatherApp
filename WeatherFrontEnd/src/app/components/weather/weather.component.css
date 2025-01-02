@@ -1,54 +1,171 @@
 .weather-container {
+    max-width: 90%;
+    margin: 25px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    /* Нежный серый фон */
+    border-radius: 10px;
+    /* Закругленные углы */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Легкая тень */
     font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1rem;
-    background-color: #f0f8ff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
-  
+
+.weather-container h1 {
+    text-align: center;
+    color: #0078d7;
+    /* Насыщенный синий цвет */
+    margin-bottom: 20px;
+}
+
 .search-container {
-    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    max-width: 50%;
+    margin: 0 auto;
 }
-  
-input[type='text'] {
-    padding: 0.5rem;
-    margin-right: 0.5rem;
-    width: calc(100% - 110px);
-    border: 1px solid #ccc;
-    border-radius: 4px;
+
+.search-container input {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    flex: 1;
 }
-  
-button {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
+
+.search-container button {
+    padding: 10px 15px;
+    background-color: #0078d7;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
+    font-size: 16px;
 }
-  
-button:hover {
-    background-color: #0056b3;
+
+.search-container button:hover {
+    background-color: #0056a8;
+    /* Более темный оттенок синего при наведении */
 }
-  
+
+.city-list {
+    text-align: center;
+    margin-top: 20px auto;
+}
+
+.city-list h3 {
+    margin-bottom: 10px;
+    color: #555;
+}
+
 .city-list ul {
     list-style: none;
     padding: 0;
 }
-  
+
 .city-list li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 10px;
+}
+
+.city-list button {
+    padding: 10px 15px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.city-list button:hover {
+    background-color: #0078d7;
+    color: white;
+    border: none;
 }
 
 .selected-city {
-    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    margin: 20px auto;
 }
 
+.selected-city h3 {
+    color: #333;
+}
+
+.selected-city button {
+    margin: 0 auto;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    max-width: 30%;
+    transition: all 0.3s;
+}
+
+.selected-city button:hover {
+    background-color: #218838;
+}
+
+.current-weather,
+.forecast {
+    margin-top: 20px;
+}
+
+.current-weather h2,
+.forecast h2 {
+    color: #0078d7;
+}
+
+.forecast {
+    display: flex;
+    flex-wrap: wrap;
+    /* Позволяет перенос элементов на новую строку */
+    justify-content: space-between;
+    /* Равномерное распределение элементов */
+    gap: 20px;
+    /* Расстояние между элементами */
+}
+
+.forecast-day {
+    background-color: #f1f1f1;
+    /* Легкий фон */
+    border-radius: 5px;
+    /* Закругленные углы */
+    padding: 10px;
+    flex: 1 1 150px;
+    /* Устанавливаем базовую ширину 150px */
+    max-width: 200px;
+    /* Ограничение максимальной ширины */
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .forecast {
+        flex-direction: column;
+        /* Для мобильных устройств элементы идут вертикально */
+        align-items: center;
+        /* Центрируем элементы */
+    }
+
+    .forecast-day {
+        width: 100%;
+        /* Элементы занимают всю ширину контейнера */
+        max-width: none;
+        /* Убираем ограничение ширины */
+    }
+}
+
+
 .error-message {
+    margin-top: 20px;
     color: red;
     font-weight: bold;
-    margin-top: 1rem;
+    text-align: center;
 }
-  

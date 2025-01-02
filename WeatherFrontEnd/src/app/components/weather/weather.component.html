@@ -1,50 +1,49 @@
 <div class="weather-container">
-    <h1>Weather Frontend</h1>
-  
-    <!-- searchBar -->
-    <div class="search-container">
-      <input
-        type="text"
-        [(ngModel)]="cityName"
-        placeholder="input city name"
-      />
-      <button (click)="searchCity()">find</button>
-    </div>
-  
-    <!-- list of cities -->
-    <div *ngIf="cities.length > 0" class="city-list">
-      <h3>Choose city:</h3>
-      <ul>
-        <li *ngFor="let city of cities">
-          <button (click)="selectCity(city)">
-            {{ city.cityName }} ({{ city.country }} - {{ city.state }})
-          </button>
-        </li>
-      </ul>
-    </div>
-  
-    <!-- chosen city -->
-    <div *ngIf="selectedCity" class="selected-city">
-      <h3>Chosen city: {{ selectedCity.cityName }}</h3>
-      <button (click)="fetchWeather()">Get weather</button>
-    </div>
-  
-    <!-- current weather -->
-    <div *ngIf="currentWeather" class="current-weather">
-      <h2>Current weather</h2>
-      <p>Temperature: {{ currentWeather.temperatureC }}°C</p>
-    </div>
-  
-    <!-- weather forecast -->
-    <div *ngIf="weatherForecast.length" class="forecast">
-      <h2>Weather forecast</h2>
-      <div *ngFor="let day of weatherForecast" class="forecast-day">
-        <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
-        <p>Temerature: {{ day.temperatureC }}°C</p>
-      </div>
-    </div>
-  
-    <!-- error message -->
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <h1>Weather Frontend</h1>
+
+  <!-- searchBar -->
+  <div class="search-container">
+    <input
+      type="text"
+      [(ngModel)]="cityName"
+      placeholder="Input city name"
+    />
+    <button (click)="searchCity()">Find</button>
   </div>
-  
+
+  <!-- list of cities -->
+  <div *ngIf="cities.length > 0" class="city-list">
+    <h3>Choose city:</h3>
+    <ul>
+      <li *ngFor="let city of cities">
+        <button (click)="selectCity(city)">
+          {{ city.cityName }} ({{ city.country }} - {{ city.state }})
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- chosen city -->
+  <div *ngIf="selectedCity" class="selected-city">
+    <h3>Chosen city: {{ selectedCity.cityName }}</h3>
+    <button (click)="fetchWeather()">Get weather</button>
+  </div>
+
+  <!-- current weather -->
+  <div *ngIf="currentWeather" class="current-weather">
+    <h2>Current weather</h2>
+    <p>Temperature: {{ currentWeather.temperatureC }}°C</p>
+  </div>
+
+  <!-- weather forecast -->
+  <div *ngIf="weatherForecast.length" class="forecast">
+      <h2>Weather forecast</h2>
+    <div *ngFor="let day of weatherForecast" class="forecast-day">
+      <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
+      <p>Temperature: {{ day.temperatureC }}°C</p>
+    </div>
+  </div>
+
+  <!-- error message -->
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>

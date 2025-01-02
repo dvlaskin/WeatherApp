@@ -10,14 +10,4 @@ import { WeatherComponent } from '../weather/weather.component';
 export class MainComponent {
 
   title = 'WeatherFrontend';
-
-  counter: number = 0;
-
-  onIncrement() {
-    this.counter++;
-  }
-
-  onDecrement() {
-    this.counter--;
-  }
 }
