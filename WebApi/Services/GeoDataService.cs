@@ -55,8 +55,16 @@ public class GeoDataService : IGeoDataService
         result = result.GroupBy(x => new { x.State, x.Country })
             .Select(x => x.First())
             .ToList();
+
         
-        await cacheService.SetAsync(cityCacheKey, result);
+        if (result.Count == 0)
+        {
+            await cacheService.SetAsync(cityCacheKey, result, TimeSpan.FromMinutes(1));
+        }
+        else
+        {
+            await cacheService.SetAsync(cityCacheKey, result);
+        }
         
         return result;
     }

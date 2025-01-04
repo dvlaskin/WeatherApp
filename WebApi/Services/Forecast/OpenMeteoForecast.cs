@@ -46,7 +46,11 @@ public class OpenMeteoForecastService : IForecastService
                 {
                     Date = DateOnly.FromDateTime(forecastDate),
                     ForecastDate = DateTime.UtcNow,
-                    TemperatureC = item.Main.Temp
+                    TemperatureC = item.Main?.Temp ?? 0,
+                    FeelsLikeC = item.Main?.FeelsLike ?? 0,
+                    Summary = item.Weather.Count > 0
+                        ? $"{item.Weather.First().Main} - {item.Weather.First().Description}"
+                        : string.Empty,
                 }
             );
         }

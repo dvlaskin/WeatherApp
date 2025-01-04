@@ -55,8 +55,9 @@ public class WeatherService
         {
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             ForecastDate = DateTime.UtcNow,
-            Summary = $"Current weather in {cityName}",
-            TemperatureC = weatherData.Values.Average(x => x.TemperatureC)
+            Summary = $"Current weather in {cityName}: {weatherData.Values.First().Summary}",
+            TemperatureC = weatherData.Values.Average(x => x.TemperatureC),
+            FeelsLikeC = weatherData.Values.Average(x => x.FeelsLikeC),
         };
         
         await cacheService.SetAsync(cityCacheKey, currentWeather, TimeSpan.FromMinutes(expiredTimeout));
@@ -92,8 +93,9 @@ public class WeatherService
             {
                 Date = x.Key,
                 ForecastDate = DateTime.UtcNow,
-                Summary = $"Weather forecast for {cityName}",
-                TemperatureC = x.Average(x => x.TemperatureC)
+                Summary = $"Weather forecast for {cityName}: {x.First().Summary}",
+                TemperatureC = x.Average(avg => avg.TemperatureC),
+                FeelsLikeC = x.Average(avg => avg.FeelsLikeC)
             })
             .ToList();
         

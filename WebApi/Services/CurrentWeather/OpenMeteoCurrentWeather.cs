@@ -34,7 +34,11 @@ public class OpenMeteoCurrentWeather : ICurrentWeatherService
         {
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             ForecastDate = DateTime.UtcNow,
-            TemperatureC = currentWeather?.Main.Temp ?? 0,
+            TemperatureC = currentWeather?.Main?.Temp ?? 0,
+            FeelsLikeC = currentWeather?.Main?.FeelsLike ?? 0,
+            Summary = currentWeather?.Weather.Count > 0
+                ? $"{currentWeather.Weather.First().Main} - {currentWeather.Weather.First().Description}"
+                : string.Empty,
         };
         
         return result;

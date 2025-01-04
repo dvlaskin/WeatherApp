@@ -5,7 +5,7 @@ namespace WebApi.Models.OpenWeatherMap;
 public class ForecastWeatherData
 {
     [JsonPropertyName("cod")]
-    public string Cod { get; set; }
+    public string? Cod { get; set; }
 
     [JsonPropertyName("message")]
     public int Message { get; set; }
@@ -17,5 +17,5 @@ public class ForecastWeatherData
     public List<ResultList> ResultsList { get; set; } = new List<ResultList>();
 
     [JsonPropertyName("city")]
-    public City City { get; set; }
+    public City? City { get; set; }
 }

@@ -5,34 +5,34 @@ namespace WebApi.Models.OpenWeatherMap;
 public class CurrentWeatherData
 {
     [JsonPropertyName("coord")]
-    public Coord Coord { get; set; }
+    public Coord? Coord { get; set; }
     
     [JsonPropertyName("weather")]
-    public List<Weather> Weather { get; } = new List<Weather>();
+    public List<Weather> Weather { get; set; } = new List<Weather>();
     
     [JsonPropertyName("base")]
-    public string Base { get; set; }
+    public string? Base { get; set; }
     
     [JsonPropertyName("main")]
-    public CurrentWeatherMain Main { get; set; }
+    public CurrentWeatherMain? Main { get; set; }
     
     [JsonPropertyName("visibility")]
     public int? Visibility { get; set; }
     
     [JsonPropertyName("wind")]
-    public Wind Wind { get; set; }
+    public Wind? Wind { get; set; }
     
     [JsonPropertyName("rain")]
-    public CurrentRain Rain { get; set; }
+    public CurrentRain? Rain { get; set; }
     
     [JsonPropertyName("clouds")]
-    public Clouds Clouds { get; set; }
+    public Clouds? Clouds { get; set; }
     
     [JsonPropertyName("dt")]
     public int? Dt { get; set; }
     
     [JsonPropertyName("sys")]
-    public CurrentWeatherSys Sys { get; set; }
+    public CurrentWeatherSys? Sys { get; set; }
     
     [JsonPropertyName("timezone")]
     public int? Timezone { get; set; }
@@ -41,7 +41,7 @@ public class CurrentWeatherData
     public int? Id { get; set; }
     
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [JsonPropertyName("cod")]
     public int? Cod { get; set; }
@@ -89,7 +89,7 @@ public class CurrentWeatherSys
     public int? Id { get; set; }
     
     [JsonPropertyName("country")]
-    public string Country { get; set; }
+    public string? Country { get; set; }
     
     [JsonPropertyName("sunrise")]
     public int? Sunrise { get; set; }
