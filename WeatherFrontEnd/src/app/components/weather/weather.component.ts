@@ -27,11 +27,17 @@ export class WeatherComponent implements OnInit {
     this.loadSelectedCity();
   }
 
+  clearWeather() {
+    this.currentWeather = null;
+    this.weatherForecast = [];
+  }
 
   searchCity() {
     if (!this.cityName.trim()) {
       return;
     }
+
+    this.clearWeather();
 
     this.weatherService.getCityCoordinates(this.cityName).subscribe({
       next: (results) => {
