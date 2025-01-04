@@ -113,13 +113,21 @@
     background-color: #218838;
 }
 
-.current-weather,
-.forecast {
-    margin-top: 20px;
+.weather-header h2 {
+    margin: 0;
+    text-align: center;
 }
 
-.current-weather h2,
-.forecast h2 {
+.current-weather,
+.forecast {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.weather-header h2{
     color: #0078d7;
 }
 
@@ -133,6 +141,7 @@
     /* Расстояние между элементами */
 }
 
+.current-day,
 .forecast-day {
     background-color: #f1f1f1;
     /* Легкий фон */
@@ -144,6 +153,12 @@
     max-width: 200px;
     /* Ограничение максимальной ширины */
     text-align: center;
+    /* Выравнивание по центру */
+    margin-bottom: 20px;
+    /* Отступ снизу */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Легкая тень */
+    transition: all 0.3s;
 }
 
 @media (max-width: 768px) {
@@ -154,8 +169,8 @@
         /* Центрируем элементы */
     }
 
+    .current-day,
     .forecast-day {
-        width: 100%;
         /* Элементы занимают всю ширину контейнера */
         max-width: none;
         /* Убираем ограничение ширины */

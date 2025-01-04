@@ -30,17 +30,32 @@
   </div>
 
   <!-- current weather -->
-  <div *ngIf="currentWeather" class="current-weather">
-    <h2>Current weather</h2>
-    <p>Temperature: {{ currentWeather.temperatureC }}°C</p>
+  <div *ngIf="currentWeather">
+    <div class="weather-header">
+      <h2>Current weather</h2>
+    </div>
+    <div class="current-weather">
+      <div class="current-day">
+        <p>Date: {{ currentWeather.date | date: 'dd.MM.yyyy' }}</p>
+        <p>Temperature: {{ currentWeather.temperatureC }}°C</p>
+        <p>Feels like: {{ currentWeather.feelsLikeC }}°C</p>
+        <p>{{ currentWeather.summary }}</p>
+      </div>
+    </div>
   </div>
 
   <!-- weather forecast -->
-  <div *ngIf="weatherForecast.length" class="forecast">
+  <div *ngIf="weatherForecast.length">
+    <div class="weather-header">
       <h2>Weather forecast</h2>
-    <div *ngFor="let day of weatherForecast" class="forecast-day">
-      <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
-      <p>Temperature: {{ day.temperatureC }}°C</p>
+    </div>
+    <div class="forecast">
+      <div *ngFor="let day of weatherForecast" class="forecast-day">
+        <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
+        <p>Temperature: {{ day.temperatureC }}°C</p>
+        <p>Feels like: {{ day.feelsLikeC }}°C</p>
+        <p>{{ day.summary }}</p>
+      </div>
     </div>
   </div>
 
