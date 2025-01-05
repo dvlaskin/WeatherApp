@@ -1,8 +1,5 @@
-using WebApi;
 using WebApi.IoC;
 using WebApi.Services;
-using WebApi.Services.CurrentWeather;
-using WebApi.Services.Forecast;
 
 var startupLogger = LoggerControl.CreateStartupLogger();
 startupLogger.LogInformation("Web API starting...");
@@ -15,15 +12,12 @@ try
     DotNetEnv.Env.Load("../.env");
     
     // setup config
-    builder.Configuration
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .AddEnvironmentVariables();
+    builder.Configuration.AddConfig();
 
     // setup logger
     builder.Logging.AddLogger();
 
     // Add services to the container.
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddCors();
@@ -32,27 +26,10 @@ try
     builder.AddRedisClient(connectionName: "cache");
 
     // add services
-    builder.Services.AddSingleton<ICacheService, RedisService>();
-    builder.Services.AddScoped<ICurrentWeatherService, OpenMeteoCurrentWeather>();
-    builder.Services.AddScoped<ICurrentWeatherCollector, CurrentWeatherCollector>();
-    builder.Services.AddScoped<IForecastService, OpenMeteoForecastService>();
-    builder.Services.AddScoped<IForecastCollector, ForecastCollector>();
-    builder.Services.AddScoped<IGeoDataService, GeoDataService>();
-    builder.Services.AddScoped<WeatherService>();
-    
+    builder.Services.AddApplicationServices();
     
     // add http factories
-    builder.Services.AddHttpClient(
-        AppConstants.OpenWeatherMapHttpClient,
-        client =>
-        {
-            client.BaseAddress = new Uri(
-                builder.Configuration.GetSection("OpenWeatherMap:BaseUrl").Value ?? string.Empty
-            );
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-        }
-    );
-    
+    builder.Services.AddHttpClients(builder.Configuration);
     
     // add open telemetry 
     builder.Services.AddOpenTelemetry(builder.Configuration);
@@ -67,7 +44,6 @@ try
     }
 
     app.UseHttpsRedirection();
-    
     app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     
     app.MapGet("/city/{cityName}", async (string cityName, IGeoDataService geoDataService) =>
