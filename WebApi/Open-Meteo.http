@@ -1,12 +1,17 @@
 @HostAddress = https://api.open-meteo.com/v1
 
-GET {{HostAddress}}/forecast/
+@cityName = Katowice
+@lat = 50.2598987
+@lon = 19.0215852
+
+### current weather data
+
+GET {{HostAddress}}/forecast?latitude={{lat}}&longitude={{lon}}&current=temperature_2m,apparent_temperature,weather_code
 Accept: application/json
 Content-Type: application/json
 
-{
-  "forecast_days": 3,
-  "city": "New-York"
-}
+### 5 days weather forecast
 
-###
+GET {{HostAddress}}/forecast?latitude={{lat}}&longitude={{lon}}&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min&timezone=GMT&forecast_days=6
+Accept: application/json
+Content-Type: application/json
