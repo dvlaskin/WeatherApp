@@ -1,3 +1,4 @@
+using WebApi;
 using WebApi.IoC;
 using WebApi.Services;
 
@@ -16,8 +17,11 @@ try
 
     // setup logger
     builder.Logging.AddLogger();
+    
+    // add rate limiter
+    builder.Services.AddApiRateLimiter();
 
-    // Add services to the container.
+    // add services to the container.
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddCors();
@@ -45,6 +49,8 @@ try
 
     app.UseHttpsRedirection();
     app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+    app.UseRateLimiter();
     
     app.MapGet("/city/{cityName}", async (string cityName, IGeoDataService geoDataService) =>
         {
@@ -53,7 +59,8 @@ try
             return result;
         })
         .WithName("GetCity")
-        .WithOpenApi();
+        .WithOpenApi()
+        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
     
     app.MapGet("/currentweather/{cityName}/{latitude}/{longitude}", 
         async (string cityName, double latitude, double longitude, WeatherService weatherForecastService) =>
