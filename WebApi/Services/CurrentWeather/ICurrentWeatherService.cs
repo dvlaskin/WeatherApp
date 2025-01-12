@@ -1,6 +1,6 @@
 using WebApi.Models;
 
-namespace WebApi.Services.Forecast;
+namespace WebApi.Services.CurrentWeather;
 
 public interface ICurrentWeatherService
 {

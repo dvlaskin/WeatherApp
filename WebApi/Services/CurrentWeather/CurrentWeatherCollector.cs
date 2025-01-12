@@ -1,5 +1,4 @@
 using WebApi.Models;
-using WebApi.Services.Forecast;
 
 namespace WebApi.Services.CurrentWeather;
 

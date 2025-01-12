@@ -9,9 +9,11 @@ public static class ServicesControl
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddSingleton<ICacheService, RedisService>();
+        services.AddScoped<ICurrentWeatherService, OpenWeatherMapCurrentWeather>();
         services.AddScoped<ICurrentWeatherService, OpenMeteoCurrentWeather>();
         services.AddScoped<ICurrentWeatherCollector, CurrentWeatherCollector>();
-        services.AddScoped<IForecastService, OpenMeteoForecastService>();
+        services.AddScoped<IForecastService, OpenWeatherMapForecast>();
+        services.AddScoped<IForecastService, OpenMeteoForecast>();
         services.AddScoped<IForecastCollector, ForecastCollector>();
         services.AddScoped<IGeoDataService, GeoDataService>();
         services.AddScoped<WeatherService>();

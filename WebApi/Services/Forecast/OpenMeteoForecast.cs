@@ -1,28 +1,26 @@
 using System.Text.Json;
 using WebApi.Models;
-using WebApi.Models.OpenWeatherMap;
+using WebApi.Models.OpenMeteo;
+using WebApi.Utils;
 
 namespace WebApi.Services.Forecast;
 
-public class OpenMeteoForecastService : IForecastService
+public class OpenMeteoForecast : IForecastService
 {
     private readonly IHttpClientFactory httpClientFactory;
-    private readonly string apiKey;
 
-    public OpenMeteoForecastService(
-        IHttpClientFactory httpClientFactory,
-        IConfiguration configuration
-    )
+    public OpenMeteoForecast(IHttpClientFactory httpClientFactory)
     {
         this.httpClientFactory = httpClientFactory;
-        this.apiKey = configuration["ApiKeys:OpenWeatherMapApiKey"] ?? string.Empty;
     }
 
     public async Task<IEnumerable<WeatherData>> FetchDataAsync(string cityName, double latitude, double longitude)
     {
         var result = new List<WeatherData>();
-        var httpClient = httpClientFactory.CreateClient(AppConstants.OpenWeatherMapHttpClient);
-        var urlString = $"/data/2.5/forecast?lat={latitude}&lon={longitude}&units=metric&appid={apiKey}";
+        var latitudeStr = latitude.ToStringWithDot();
+        var longitudeStr = longitude.ToStringWithDot();
+        var httpClient = httpClientFactory.CreateClient(AppConstants.OpenMeteoHttpClient);
+        var urlString = $"/v1/forecast?latitude={latitudeStr}&longitude={longitudeStr}&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min&timezone=GMT&forecast_days=6";
         var response = await httpClient.GetAsync(urlString);
 
         response.EnsureSuccessStatusCode();
@@ -33,24 +31,31 @@ public class OpenMeteoForecastService : IForecastService
             ? new ForecastWeatherData()
             : JsonSerializer.Deserialize<ForecastWeatherData>(responseString)!;
         
-
-        foreach (var item in weatherForecast.ResultsList)
+        for (var i = 1; i < weatherForecast.DailyForecast?.WeatherDates.Count; i++)
         {
-            var forecastDate = DateTimeOffset.FromUnixTimeSeconds(item.Dt).DateTime;
+            if (weatherForecast.DailyForecast?.WeatherDates is null)
+            {
+                result.Clear();
+                break;
+            }
             
-            if (forecastDate.Hour > 0)
-                continue;
-            
+            var forecastDate = DateOnly.Parse(weatherForecast.DailyForecast?.WeatherDates[i]!);
             result.Add(
                 new()
                 {
-                    Date = DateOnly.FromDateTime(forecastDate),
+                    Date = forecastDate,
                     ForecastDate = DateTime.UtcNow,
-                    TemperatureC = item.Main?.Temp ?? 0,
-                    FeelsLikeC = item.Main?.FeelsLike ?? 0,
-                    Summary = item.Weather.Count > 0
-                        ? $"{item.Weather.First().Main} - {item.Weather.First().Description}"
-                        : string.Empty,
+                    TemperatureC = 
+                    (
+                        weatherForecast.DailyForecast?.TempMax[i] ?? 0 
+                        + weatherForecast.DailyForecast?.TempMin[i] ?? 0
+                    ) / 2.0d,
+                    FeelsLikeC = 
+                    (
+                        weatherForecast.DailyForecast?.FeelsLikeMax[i] ?? 0 
+                        + weatherForecast.DailyForecast?.FeelsLikeMin[i] ?? 0
+                    ) / 2.0d,
+                    Summary = weatherForecast.DailyForecast?.WeatherCodes[i].ToWmoCode()
                 }
             );
         }
