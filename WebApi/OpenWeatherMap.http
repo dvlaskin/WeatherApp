@@ -2,8 +2,8 @@
 @apiKey = {{OpenWeatherMapApiKey}}
 
 # city location
-@lat=51.5073219
-@lon=-0.1276474
+@lat= 50.2598987
+@lon= 19.0215852
 
 ### location of a city
 

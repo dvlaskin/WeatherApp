@@ -37,8 +37,8 @@
     <div class="current-weather">
       <div class="current-day">
         <p>Date: {{ currentWeather.date | date: 'dd.MM.yyyy' }}</p>
-        <p>Temperature: {{ currentWeather.temperatureC }}°C</p>
-        <p>Feels like: {{ currentWeather.feelsLikeC }}°C</p>
+        <p>Temperature: {{ currentWeather.temperatureC | number: '1.0-1' }}°C</p>
+        <p>Feels like: {{ currentWeather.feelsLikeC | number: '1.0-1' }}°C</p>
         <p>{{ currentWeather.summary }}</p>
       </div>
     </div>
@@ -52,8 +52,8 @@
     <div class="forecast">
       <div *ngFor="let day of weatherForecast" class="forecast-day">
         <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
-        <p>Temperature: {{ day.temperatureC }}°C</p>
-        <p>Feels like: {{ day.feelsLikeC }}°C</p>
+        <p>Temperature: {{ day.temperatureC | number: '1.0-1' }}°C</p>
+        <p>Feels like: {{ day.feelsLikeC | number: '1.0-1' }}°C</p>
         <p>{{ day.summary }}</p>
       </div>
     </div>

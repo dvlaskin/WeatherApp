@@ -71,7 +71,8 @@ try
             return forecast;
         })
         .WithName("GetCurrentWeather")
-        .WithOpenApi();
+        .WithOpenApi()
+        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
     
     app.MapGet("/weatherforecast/{cityName}/{latitude}/{longitude}",
         async (string cityName, double latitude, double longitude, WeatherService weatherForecastService) =>
@@ -82,7 +83,8 @@ try
             return forecast;
         })
         .WithName("GetWeatherForecast")
-        .WithOpenApi();
+        .WithOpenApi()
+        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
     
     
     app.Run();

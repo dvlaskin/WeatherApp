@@ -18,7 +18,7 @@ public class OpenWeatherMapForecast : IForecastService
         this.apiKey = configuration["ApiKeys:OpenWeatherMapApiKey"] ?? string.Empty;
     }
 
-    public async Task<IEnumerable<WeatherData>> FetchDataAsync(string cityName, double latitude, double longitude)
+    public async Task<IReadOnlyList<WeatherData>> FetchDataAsync(string cityName, double latitude, double longitude)
     {
         var result = new List<WeatherData>();
         var httpClient = httpClientFactory.CreateClient(AppConstants.OpenWeatherMapHttpClient);

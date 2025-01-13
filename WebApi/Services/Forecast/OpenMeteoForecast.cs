@@ -14,7 +14,7 @@ public class OpenMeteoForecast : IForecastService
         this.httpClientFactory = httpClientFactory;
     }
 
-    public async Task<IEnumerable<WeatherData>> FetchDataAsync(string cityName, double latitude, double longitude)
+    public async Task<IReadOnlyList<WeatherData>> FetchDataAsync(string cityName, double latitude, double longitude)
     {
         var result = new List<WeatherData>();
         var latitudeStr = latitude.ToStringWithDot();

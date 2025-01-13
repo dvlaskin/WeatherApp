@@ -12,19 +12,22 @@ public class WeatherService
     private readonly IForecastCollector forecastCollector;
     private readonly ICacheService cacheService;
 
-    private readonly string currentWeatherCacheKey = "currentWeather:{0}_{1}_{2}";
-    private readonly string forecastWeatherCacheKey = "forecastWeather:{0}_{1}_{2}";
+    private const string CurrentWeatherCacheKey = "currentWeather:{0}_{1}_{2}";
+    private const string ForecastWeatherCacheKey = "forecastWeather:{0}_{1}_{2}";
 
-    private readonly int expiredTimeout = 60;
+    private readonly int expirationTimeout;
 
     
     public WeatherService(
+        IConfiguration config,
         ILogger<WeatherService> logger,
         ICurrentWeatherCollector currentWeatherCollector,
         IForecastCollector forecastCollector,
         ICacheService cacheService
     )
     {
+        this.expirationTimeout = config.GetValue<int>("WeatherCache:ExpirationTimeoutMinutes");
+        
         this.logger = logger;
         this.currentWeatherCollector = currentWeatherCollector;
         this.forecastCollector = forecastCollector;
@@ -37,7 +40,7 @@ public class WeatherService
         logger.LogInformation("Getting current weather for city {City}", cityName);
         
         var cityCacheKey = string.Format(
-            currentWeatherCacheKey, cityName.KeyNormalization(), latitude, longitude
+            CurrentWeatherCacheKey, cityName.KeyNormalization(), latitude, longitude
         );
         var cachedWeather = await cacheService.GetAsync<WeatherData>(cityCacheKey);
         
@@ -60,17 +63,17 @@ public class WeatherService
             FeelsLikeC = weatherData.Values.Average(x => x.FeelsLikeC),
         };
         
-        await cacheService.SetAsync(cityCacheKey, currentWeather, TimeSpan.FromMinutes(expiredTimeout));
+        await cacheService.SetAsync(cityCacheKey, currentWeather, TimeSpan.FromMinutes(expirationTimeout));
         
         return currentWeather;
     }
     
-    public async Task<IEnumerable<WeatherData>> GetForecastAsync(string cityName, double latitude, double longitude)
+    public async Task<IReadOnlyList<WeatherData>> GetForecastAsync(string cityName, double latitude, double longitude)
     {
         logger.LogInformation("Getting weather forecast for city {City}", cityName);
         
         var cityCacheKey = string.Format(
-            forecastWeatherCacheKey, cityName.KeyNormalization(), latitude, longitude
+            ForecastWeatherCacheKey, cityName.KeyNormalization(), latitude, longitude
         );
         var cachedWeather = await cacheService.GetAsync<List<WeatherData>>(cityCacheKey);
         
@@ -80,7 +83,7 @@ public class WeatherService
             return cachedWeather;
         }
 
-        Dictionary<string, IEnumerable<WeatherData>> forecasts = await forecastCollector
+        Dictionary<string, IReadOnlyList<WeatherData>> forecasts = await forecastCollector
             .CollectForecastAsync(cityName, latitude, longitude);
 
 
@@ -93,13 +96,13 @@ public class WeatherService
             {
                 Date = x.Key,
                 ForecastDate = DateTime.UtcNow,
-                Summary = $"Weather forecast for {cityName}: {x.First().Summary}",
+                Summary = $"Weather forecast for {cityName}: {x.ToList().GetRandom().Summary}",
                 TemperatureC = x.Average(avg => avg.TemperatureC),
                 FeelsLikeC = x.Average(avg => avg.FeelsLikeC)
             })
             .ToList();
         
-        await cacheService.SetAsync(cityCacheKey, forecastWeather, TimeSpan.FromMinutes(expiredTimeout));
+        await cacheService.SetAsync(cityCacheKey, forecastWeather, TimeSpan.FromMinutes(expirationTimeout));
         
         return forecastWeather;
     }
