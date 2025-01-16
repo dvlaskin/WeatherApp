@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using WebApi;
 using WebApi.IoC;
 using WebApi.Services;
@@ -17,6 +18,9 @@ try
 
     // setup logger
     builder.Logging.AddLogger();
+    
+    // add health checks
+    builder.Services.AddAppHealthChecks();
     
     // add rate limiter
     builder.Services.AddApiRateLimiter();
@@ -40,6 +44,20 @@ try
 
     var app = builder.Build();
 
+    var healthReport = await app.Services.GetRequiredService<HealthCheckService>().CheckHealthAsync();
+    if (healthReport.Status == HealthStatus.Unhealthy)
+    {
+        startupLogger.LogCritical(
+            "API health check is unhealthy: {Message}", 
+            healthReport.Entries
+                .Select(s => new { s.Key, s.Value.Status })
+                .ToList()
+        );
+
+        await app.StopAsync();
+        return;
+    }
+
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -51,6 +69,11 @@ try
     app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
     app.UseRateLimiter();
+    
+    app.MapHealthChecks("/health")
+        .WithName("HealthCheck")
+        .WithOpenApi()
+        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
     
     app.MapGet("/city/{cityName}", async (string cityName, IGeoDataService geoDataService) =>
         {
