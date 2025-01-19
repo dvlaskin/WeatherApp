@@ -1,7 +1,7 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace WebApi.IoC;
+namespace ReverseProxyApi.IoC;
 
 public static class RateLimiterControl
 {

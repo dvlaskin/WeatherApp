@@ -1,0 +1,21 @@
+@WebApi_HostAddress = http://localhost:5155
+
+@cityName = Katowice
+@lat = 50.2598987
+@lon = 19.0215852
+
+
+### city coordinates
+
+GET {{WebApi_HostAddress}}/city/{{cityName}}
+Accept: application/json
+
+### currentweather
+
+GET {{WebApi_HostAddress}}/currentweather/{{cityName}}/{{lat}}/{{lon}}
+Accept: application/json
+
+### weatherforecast
+
+GET {{WebApi_HostAddress}}/weatherforecast/{{cityName}}/{{lat}}/{{lon}}
+Accept: application/json

@@ -21,9 +21,6 @@ try
     
     // add health checks
     builder.Services.AddAppHealthChecks();
-    
-    // add rate limiter
-    builder.Services.AddApiRateLimiter();
 
     // add services to the container.
     builder.Services.AddEndpointsApiExplorer();
@@ -67,13 +64,10 @@ try
 
     app.UseHttpsRedirection();
     app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-    app.UseRateLimiter();
     
     app.MapHealthChecks("/health")
         .WithName("HealthCheck")
-        .WithOpenApi()
-        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
+        .WithOpenApi();
     
     app.MapGet("/city/{cityName}", async (string cityName, IGeoDataService geoDataService) =>
         {
@@ -82,8 +76,7 @@ try
             return result;
         })
         .WithName("GetCity")
-        .WithOpenApi()
-        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
+        .WithOpenApi();
     
     app.MapGet("/currentweather/{cityName}/{latitude}/{longitude}", 
         async (string cityName, double latitude, double longitude, WeatherService weatherForecastService) =>
@@ -94,8 +87,7 @@ try
             return forecast;
         })
         .WithName("GetCurrentWeather")
-        .WithOpenApi()
-        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
+        .WithOpenApi();
     
     app.MapGet("/weatherforecast/{cityName}/{latitude}/{longitude}",
         async (string cityName, double latitude, double longitude, WeatherService weatherForecastService) =>
@@ -106,8 +98,7 @@ try
             return forecast;
         })
         .WithName("GetWeatherForecast")
-        .WithOpenApi()
-        .RequireRateLimiting(AppConstants.SlidingWindowLimiter);
+        .WithOpenApi();
     
     
     app.Run();
