@@ -8,12 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 // add rate limiter
 builder.Services.AddApiRateLimiter();
 
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+builder.Services
+    .AddServiceDiscovery()
+    .AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    .AddServiceDiscoveryDestinationResolver();
 
 var app = builder.Build();
 
 // app.UseHttpsRedirection();
+app.UseCors(builderConfig => builderConfig.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseRateLimiter();
 

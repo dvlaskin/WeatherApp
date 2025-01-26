@@ -6,7 +6,9 @@ import { Observable } from "rxjs";
 @Injectable()
 export class WeatherService {
 
-    private apiHost: string = "http://localhost:5009";
+    // private apiHost: string = "http://localhost:5009/api";
+    private apiHost: string = "/api";
+
 
 
     constructor(private http: HttpClient) { }

@@ -9,12 +9,15 @@ var cache = builder
 var webapi = builder
     .AddProject<WebApi>("webapi")
     .WithReference(cache)
-    .WaitFor(cache)
+    .WithExternalHttpEndpoints();
+
+var apiReverseProxy = builder
+    .AddProject<ReverseProxyApi>("apiReverseProxy")
+    .WithReference(webapi)
     .WithExternalHttpEndpoints();
 
 builder.AddNpmApp("angular", "../WeatherFrontend")
-    .WithReference(webapi)
-    .WaitFor(webapi)
+    .WithReference(apiReverseProxy)
     .WithHttpEndpoint(env: "PORT")
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
