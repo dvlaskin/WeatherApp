@@ -14,6 +14,8 @@ builder.Services
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
     .AddServiceDiscoveryDestinationResolver();
 
+builder.Services.AddAppOpenTelemetry(builder.Configuration);
+
 var app = builder.Build();
 
 // app.UseHttpsRedirection();

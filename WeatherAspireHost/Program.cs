@@ -18,7 +18,7 @@ var apiReverseProxy = builder
 
 builder.AddNpmApp("angular", "../WeatherFrontend")
     .WithReference(apiReverseProxy)
-    .WithHttpEndpoint(env: "PORT")
+    .WithHttpEndpoint(port: 4200, env: "PORT")
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 
