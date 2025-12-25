@@ -27,7 +27,7 @@ public class RedisService : ICacheService
         if (!cachedValue.HasValue || cachedValue.IsNullOrEmpty)
             return default;
         
-        return JsonSerializer.Deserialize<T>(cachedValue!, jsonOptions);
+        return JsonSerializer.Deserialize<T>(cachedValue.ToString(), jsonOptions);
             
     }
 
