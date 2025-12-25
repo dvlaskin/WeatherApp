@@ -16,7 +16,7 @@ export class WeatherComponent implements OnInit {
 
   cityName: string = '';
   cities: any[] = [];
-  selectedCity: { cityName: string, lat: number, lon: number } | null = null;
+  selectedCity: { cityName: string, lat: number, lon: number, country?: string, state?: string } | null = null;
   currentWeather: any = null;
   weatherForecast: any[] = [];
   errorMessage: string = '';
@@ -61,7 +61,7 @@ export class WeatherComponent implements OnInit {
     });
   }
 
-  selectCity(city: { cityName: string, lat: number, lon: number }) {
+  selectCity(city: { cityName: string, lat: number, lon: number, country?: string, state?: string }) {
     this.selectedCity = city;
     this.saveSelectedCity();
     this.cities = [];
@@ -109,4 +109,14 @@ export class WeatherComponent implements OnInit {
     });
   }
 
+  getWeatherIcon(summary: string): string {
+    const s = summary.toLowerCase();
+    if (s.includes('cloud') || s.includes('overcast')) return '☁️';
+    if (s.includes('rain') || s.includes('drizzle') || s.includes('shower')) return '🌧️';
+    if (s.includes('snow') || s.includes('sleet') || s.includes('blizzard')) return '❄️';
+    if (s.includes('storm') || s.includes('thunder')) return '⚡';
+    if (s.includes('fog') || s.includes('mist') || s.includes('haze')) return '🌫️';
+    if (s.includes('sun') || s.includes('clear') || s.includes('fair')) return '☀️'; // Changed from 'Clear' to 'Sun' icon, logic remains for 'Clear' text
+    return '⛅'; // Default to partly cloudy/sun
+  }
 }

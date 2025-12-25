@@ -1,64 +1,102 @@
 <div class="weather-container">
-  <h1>Weather Frontend</h1>
+  <header class="app-header">
+    <h1>Weather App</h1>
+  </header>
 
   <!-- searchBar -->
-  <div class="search-container">
-    <input
-      type="text"
-      [(ngModel)]="cityName"
-      placeholder="Input city name"
-    />
-    <button (click)="searchCity()">Find</button>
+  <div class="search-section">
+    <div class="search-container">
+      <input type="text" [(ngModel)]="cityName" placeholder="Search for a city..." (keyup.enter)="searchCity()" />
+      <button (click)="searchCity()" class="search-btn">
+        <span>Find</span>
+      </button>
+    </div>
   </div>
 
   <!-- list of cities -->
-  <div *ngIf="cities.length > 0" class="city-list">
-    <h3>Choose city:</h3>
-    <ul>
+  <div *ngIf="cities.length > 0" class="city-list-section">
+    <h3>Select a location:</h3>
+    <ul class="city-list">
       <li *ngFor="let city of cities">
-        <button (click)="selectCity(city)">
-          {{ city.cityName }} ({{ city.country }} - {{ city.state }})
+        <button (click)="selectCity(city)" class="city-chip">
+          <span class="city-name">{{ city.cityName }}</span>
+          <span class="city-region">{{ city.country }}</span>
         </button>
       </li>
     </ul>
   </div>
 
   <!-- chosen city -->
-  <div *ngIf="selectedCity" class="selected-city">
-    <h3>Chosen city: {{ selectedCity.cityName }}</h3>
-    <button (click)="fetchWeather()">Get weather</button>
-  </div>
-
-  <!-- current weather -->
-  <div *ngIf="currentWeather">
-    <div class="weather-header">
-      <h2>Current weather</h2>
-    </div>
-    <div class="current-weather">
-      <div class="current-day">
-        <p>Date: {{ currentWeather.date | date: 'dd.MM.yyyy' }}</p>
-        <p>Temperature: {{ currentWeather.temperatureC | number: '1.0-1' }}°C</p>
-        <p>Feels like: {{ currentWeather.feelsLikeC | number: '1.0-1' }}°C</p>
-        <p>{{ currentWeather.summary }}</p>
-      </div>
+  <div *ngIf="selectedCity" class="selected-city-section">
+    <div class="selected-city-card">
+      <h3>{{ selectedCity.cityName }}</h3>
+      <p class="region-text">{{ selectedCity.state ? selectedCity.state + ', ' : '' }}{{ selectedCity.country }}</p>
+      <button (click)="fetchWeather()" class="fetch-btn">
+        Show Weather
+      </button>
     </div>
   </div>
 
-  <!-- weather forecast -->
-  <div *ngIf="weatherForecast.length">
-    <div class="weather-header">
-      <h2>Weather forecast</h2>
-    </div>
-    <div class="forecast">
-      <div *ngFor="let day of weatherForecast" class="forecast-day">
-        <p>Date: {{ day.date | date: 'dd.MM.yyyy' }}</p>
-        <p>Temperature: {{ day.temperatureC | number: '1.0-1' }}°C</p>
-        <p>Feels like: {{ day.feelsLikeC | number: '1.0-1' }}°C</p>
-        <p>{{ day.summary }}</p>
+  <!-- Main Content Grid -->
+  <div class="weather-content" *ngIf="currentWeather || weatherForecast.length">
+
+    <!-- current weather -->
+    <section *ngIf="currentWeather" class="current-weather-section">
+      <div class="section-header">
+        <h2>Current Weather</h2>
       </div>
-    </div>
+      <div class="current-weather-card">
+        <div class="card-header">
+          <span class="date-badge">{{ currentWeather.date | date: 'fullDate' }}</span>
+        </div>
+        <div class="card-body">
+          <div class="temp-wrapper">
+            <span class="main-temp">{{ currentWeather.temperatureC | number: '1.0-0' }}</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <div class="weather-summary">
+            <span class="weather-icon-large">{{ getWeatherIcon(currentWeather.summary) }}</span>
+            {{ currentWeather.summary }}
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="weather-metric">
+            <span class="label">Feels like</span>
+            <span class="value">{{ currentWeather.feelsLikeC | number: '1.0-1' }}°</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- weather forecast -->
+    <section *ngIf="weatherForecast.length" class="forecast-section">
+      <div class="section-header">
+        <h2>5-Day Forecast</h2>
+      </div>
+      <div class="forecast-grid">
+        <div *ngFor="let day of weatherForecast" class="forecast-card">
+          <div class="forecast-date">{{ day.date | date: 'EEE, MMM d' }}</div>
+          <div class="forecast-icon">
+            <div class="weather-circle">
+              <span class="weather-emoji">{{ getWeatherIcon(day.summary) }}</span>
+            </div>
+          </div>
+          <div class="forecast-temp">
+            <span class="high">{{ day.temperatureC | number: '1.0-0' }}°</span>
+          </div>
+          <div class="forecast-summary">{{ day.summary }}</div>
+          <div class="forecast-feels">
+            Feels {{ day.feelsLikeC | number: '1.0-0' }}°
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- error message -->
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage" class="error-toast">
+    <div class="error-content">
+      {{ errorMessage }}
+    </div>
+  </div>
 </div>
