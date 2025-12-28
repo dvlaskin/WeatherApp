@@ -58,7 +58,7 @@ public class WeatherService
         {
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             ForecastDate = DateTime.UtcNow,
-            Summary = $"Current weather in {cityName}: {weatherData.Values.First().Summary}",
+            Summary = $"{weatherData.Values.First().Summary}",
             TemperatureC = weatherData.Values.Average(x => x.TemperatureC),
             FeelsLikeC = weatherData.Values.Average(x => x.FeelsLikeC),
         };

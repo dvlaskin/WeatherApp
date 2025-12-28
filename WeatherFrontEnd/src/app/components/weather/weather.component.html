@@ -29,8 +29,10 @@
   <!-- chosen city -->
   <div *ngIf="selectedCity" class="selected-city-section">
     <div class="selected-city-card">
-      <h3>{{ selectedCity.cityName }}</h3>
-      <p class="region-text">{{ selectedCity.state ? selectedCity.state + ', ' : '' }}{{ selectedCity.country }}</p>
+      <div class="city-info">
+        <h3>{{ selectedCity.cityName }}</h3>
+        <p class="region-text">{{ selectedCity.state ? selectedCity.state + ', ' : '' }}{{ selectedCity.country }}</p>
+      </div>
       <button (click)="fetchWeather()" class="fetch-btn">
         Show Weather
       </button>
@@ -47,7 +49,11 @@
       </div>
       <div class="current-weather-card">
         <div class="card-header">
-          <span class="date-badge">{{ currentWeather.date | date: 'fullDate' }}</span>
+          <div class="date-stack">
+            <span class="date-day">{{ currentWeather.date | date: 'EEEE' }}</span>
+            <span class="date-full">{{ currentWeather.date | date: 'MMMM d' }}</span>
+            <span class="date-year">{{ currentWeather.date | date: 'yyyy' }}</span>
+          </div>
         </div>
         <div class="card-body">
           <div class="temp-wrapper">
@@ -56,7 +62,7 @@
           </div>
           <div class="weather-summary">
             <span class="weather-icon-large">{{ getWeatherIcon(currentWeather.summary) }}</span>
-            {{ currentWeather.summary }}
+            <span class="summary-text">{{ currentWeather.summary }}</span>
           </div>
         </div>
         <div class="card-footer">
